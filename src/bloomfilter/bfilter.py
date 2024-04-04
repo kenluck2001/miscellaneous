@@ -39,35 +39,23 @@ class BloomFilter:
     def GetSettings (self):
         return self.settings
 
-    def Insert(self, xText, sigText=""):
+    def Insert(self, xText):
         l = self.settings.l
         hashSize = self.settings.hashSize
-        xTextWithSig = "{}{}".format(xText, sigText)
-        for ind in range(0, l):
-            pos = self.HashFunction(xTextWithSig, hashSize, ind)
+        for ind in range(l):
+            pos = self.HashFunction(xText, hashSize, ind)
             self.bList[pos] = 1
 
-    def Lookup(self, xText, sigText=""):
+    def Lookup(self, xText):
         l = self.settings.l
         hashSize = self.settings.hashSize
-        xTextWithSig = "{}{}".format(xText, sigText)
-        for ind in range(0, l):
-            pos = self.HashFunction(xTextWithSig, hashSize, ind)
+        for ind in range(l):
+            pos = self.HashFunction(xText, hashSize, ind)
             if not self.bList[pos]:
                 return False
         return True
 
 if __name__ == '__main__':
-    bf = BloomFilter()
-    sigText = "sam"
-    bf.Insert("AAA", sigText)
-
-    print ("FOUND AAA: {}".format(bf.Lookup("AAA", sigText)))
-    print ("FOUND AAB: {}".format(bf.Lookup("AAB", sigText)))
-    print ("FOUND AAC: {}".format(bf.Lookup("AAC", sigText)))
-    print ("FOUND ACB: {}".format(bf.Lookup("ACB", sigText)))
-
-    # don't mix signature argument with non-signature argument to prevent undefined results
     bf = BloomFilter()
     bf.Insert("AAA")
 

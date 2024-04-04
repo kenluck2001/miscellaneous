@@ -57,12 +57,12 @@ class CuckooFilter:
     def GetSettings (self):
         return self.settings
 
-    def Insert(self, xText, sigText=""):
+    def Insert(self, xText):
         m = self.settings.m
         hashSize = self.settings.hashSize
-        xTextWithSig = "{}{}".format(xText, sigText)
-        fingerprint = self.Fingerprint(xTextWithSig)
-        pos_i1 = self.HashFunction(xTextWithSig, hashSize)
+
+        fingerprint = self.Fingerprint(xText)
+        pos_i1 = self.HashFunction(xText, hashSize)
         pos_i2 = (pos_i1 ^ self.HashFunction(fingerprint, hashSize)) % m
 
         # add element if pos_i1 or pos_i2 is empty
@@ -92,12 +92,11 @@ class CuckooFilter:
 
         return False
 
-    def Lookup(self, xText, sigText=""):
+    def Lookup(self, xText):
         m = self.settings.m
         hashSize = self.settings.hashSize
-        xTextWithSig = "{}{}".format(xText, sigText)
-        fingerprint = self.Fingerprint(xTextWithSig)
-        pos_i1 = self.HashFunction(xTextWithSig, hashSize)
+        fingerprint = self.Fingerprint(xText)
+        pos_i1 = self.HashFunction(xText, hashSize)
         pos_i2 = (pos_i1 ^ self.HashFunction(fingerprint, hashSize)) % m
 
         # add element if pos_i1 or pos_i2 is empty
@@ -106,12 +105,11 @@ class CuckooFilter:
 
         return False
 
-    def Delete(self, xText, sigText=""):
+    def Delete(self, xText):
         m = self.settings.m
         hashSize = self.settings.hashSize
-        xTextWithSig = "{}{}".format(xText, sigText)
-        fingerprint = self.Fingerprint(xTextWithSig)
-        pos_i1 = self.HashFunction(xTextWithSig, hashSize)
+        fingerprint = self.Fingerprint(xText)
+        pos_i1 = self.HashFunction(xText, hashSize)
         pos_i2 = (pos_i1 ^ self.HashFunction(fingerprint, hashSize)) % m
 
         if (self.bucket[pos_i1] == fingerprint):
@@ -125,30 +123,6 @@ class CuckooFilter:
         return False
 
 if __name__ == '__main__':
-    cf = CuckooFilter()
-    sigText = "xxx"
-    cf.Insert("AAA", sigText)
-    print ("=================================")
-    print ("FOUND AAA: {}".format(cf.Lookup("AAA", sigText)))
-    print ("FOUND AAB: {}".format(cf.Lookup("AAB", sigText)))
-    print ("FOUND AAC: {}".format(cf.Lookup("AAC", sigText)))
-    print ("FOUND ACB: {}".format(cf.Lookup("ACB", sigText)))
-
-    cf.Delete("AAA", sigText)
-    print ("=================================")
-    print ("FOUND AAA: {}".format(cf.Lookup("AAA", sigText)))
-    print ("FOUND AAB: {}".format(cf.Lookup("AAB", sigText)))
-    print ("FOUND AAC: {}".format(cf.Lookup("AAC", sigText)))
-    print ("FOUND ACB: {}".format(cf.Lookup("ACB", sigText)))
-
-    cf.Insert("AAA", sigText)
-    print ("=================================")
-    print ("FOUND AAA: {}".format(cf.Lookup("AAA", sigText)))
-    print ("FOUND AAB: {}".format(cf.Lookup("AAB", sigText)))
-    print ("FOUND AAC: {}".format(cf.Lookup("AAC", sigText)))
-    print ("FOUND ACB: {}".format(cf.Lookup("ACB", sigText)))
-
-    # don't mix signature argument with non-signature argument to prevent undefined results
     cf = CuckooFilter()
     cf.Insert("AAA")
     print ("=================================")
