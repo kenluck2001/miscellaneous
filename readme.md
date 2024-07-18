@@ -7,3 +7,5 @@ This contains the implementation of a lattice-based blind signature scheme based
 This contains the implementation of a simple bloom filter.
 - src/cuckoofilter
 This contains the implementation of a cuckoo filter.
+- src/leakdetector
+This contains the implementation of a privacy leak detection using statistical physics.
