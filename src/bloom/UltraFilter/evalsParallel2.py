@@ -383,8 +383,8 @@ def logFile(title, xlist, fpr_randlst, fnr_randlst, f1score_randlst, log="result
         file.write ("\n============================\n")
 
 if __name__ == '__main__':
-    #experimentNoiseByMetric("NoiseByMetric.png")
-    #experimentOccupancyByOverNoiseRangeMetric("OccupancyByOverNoiseRange.png")
+    experimentNoiseByMetric("NoiseByMetric.png")
+    experimentOccupancyByOverNoiseRangeMetric("OccupancyByOverNoiseRange.png")
     experimentNumOfHashesByOverNoiseRangeMetric("NumOfHashesByOverNoiseRange.png")
     experimentOccupancyByMetric("OccupancyByMetric.png")
     experimentNumOfHashesByMetric("NumOfHashesByMetric.png")
