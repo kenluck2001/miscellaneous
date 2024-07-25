@@ -9,3 +9,5 @@ This contains the implementation of a simple bloom filter.
 This contains the implementation of a cuckoo filter.
 - src/leakdetector
 This contains the implementation of a privacy leak detection using statistical physics.
+- src/bloom/UltraFilter
+This contains the implementation of a differentially private bloom filter
