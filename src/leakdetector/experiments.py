@@ -6,7 +6,10 @@ import numpy as np
 from collections import defaultdict
 import math
 import random
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
 
 SEED = 65535
@@ -117,7 +120,7 @@ def GetExponentialMechDataFrame(df, uFunc2, sensitivity, epsilon):
 
 def ReduceDim(df, nComponents=1):
     dfMat = df._get_numeric_data().values
-    dfvec = TSNE(n_components=nComponents).fit_transform(dfMat).ravel()
+    dfvec = TSNE(n_components=nComponents, perplexity=7).fit_transform(dfMat).ravel()
     return dfvec
 
 
@@ -129,6 +132,26 @@ def ObtainPrivacyRisk(df, uFunc2, epsilon):
     noisydf =  GetExponentialMechDataFrame(df, uFunc2, sensitivity, epsilon)
     dfLst = ReduceDim(df)
     noisydfLst = ReduceDim(noisydf)
+    patternLenlst = range(1, 25)
+    # corresponding y axis values
+    entropylst = [permutationEntropy(dfLst, nPattern) for nPattern in patternLenlst]
+    index = entropylst.index(max(entropylst))
+    print ("max entropy: {}".format(entropylst[index]))
+    print ("pattern length with max entropy: {}".format(patternLenlst[index]))
+    nPattern = patternLenlst[index]
+    e1 = permutationEntropy(dfLst, nPattern) / math.log(len(dfLst), 2)
+    e2 = permutationEntropy(noisydfLst, nPattern) / math.log(len(noisydfLst), 2)
+    gamma = e2 * (1.0 - e1) / (e1 * (1.0 - e2))
+    return e1, e2, nPattern, gamma
+
+
+def ObtainPrivacyRiskNonPriv(df):
+    '''
+        returns tuple of degree of anomymity for original data, transformed data, pattern length, and amplification
+    '''
+    sensitivity = GetMaxSensistivity(df)
+    dfLst = ReduceDim(df)
+    noisydfLst = range(len(df))
     patternLenlst = range(1, 25)
     # corresponding y axis values
     entropylst = [permutationEntropy(dfLst, nPattern) for nPattern in patternLenlst]
@@ -221,8 +244,26 @@ def ExperimentOnPublicData():
         print("# dataset: {}, size: {}, pattern length: {}, e1: {}, e2: {}, gamma: {}".format(dataset, len(df), nPattern, e1, e2, gamma))
         print("################################################")
 
+
+def ExperimentOnNonPrivate():
+    #https://www.kaggle.com/datasets/umerrtx/machine-failure-prediction-using-sensor-data [machine-prediction.csv]
+    #https://www.kaggle.com/datasets/rabieelkharoua/predict-customer-purchase-behavior-dataset [customer-purchase.csv]
+    #https://www.kaggle.com/datasets/mrsimple07/employee-attrition-data-prediction [employee-attrition.csv]
+
+    epsilon = 0.337
+    delta = 0.1
+    datasetNamesLst = ["machine-prediction.csv", "customer-purchase.csv", "employee-attrition.csv"]
+    for dataset in datasetNamesLst:
+        df = pd.read_csv('./data/{}'.format(dataset))  
+        e1, e2, nPattern, gamma = ObtainPrivacyRiskNonPriv(df)
+        print("# dataset: {}, size: {}, pattern length: {}, e1: {}, e2: {}, gamma: {}".format(dataset, len(df), nPattern, e1, e2, gamma))
+        print("################################################")
+
 if __name__ == '__main__':
-    ExperimentRandomGenValues()
+    #ExperimentRandomGenValues()
+    print ("privacy-preserving cases")
     ExperimentOnPublicData()
+    print ("blatantly private cases")
+    ExperimentOnNonPrivate()
 
     

@@ -4,6 +4,7 @@ This work contains the experiments that are needed to demonstrate if data sets a
 
 
 All the code is tested in Python 2.7
+- experiments.py : This contains the source code for the experiments.
 
 ### Datasets
 - [machine-prediction.csv](https://www.kaggle.com/datasets/umerrtx/machine-failure-prediction-using-sensor-data)
@@ -12,3 +13,17 @@ All the code is tested in Python 2.7
 
 
 All charts were made using matplotlib.
+
+
+## How to run
++ Setup environment
+```
+virtualenv -p /usr/bin/python py2env
+source py2env/bin/activate
+pip install -r requirements.txt
+```
+
++ Running evaluation
+```
+python experiments.py
+```
